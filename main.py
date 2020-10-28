@@ -1,29 +1,34 @@
-import pygame
-import random
+import pygame as pg
+import sys
 
-W = 800
-H = 600
-BG = (0,0,0)
-RED = (0,0,360)
-blok = 0
-start = 1
+SIZE = WIDTH, HEIGHT = 640, 400
+speed_x, speed_y = 5, 5
+BLACK = (0, 0, 0)
+FPS = 60
 
-pygame.init()
-pygame.display.set.caption("Текст")
-pygame.display.set_mode((W,H))
-screen = pygame.display.set_visible(False)
-navy =  (5,0,50)
-screen.fill(navy)
-pygame.mouse.set_visible(False)
-front = pygame.font.SysFont('Arial',38,True,False)
-front2 = pygame.font.SysFont('Arial',18,False,True)
-front_box = pygame.Surface((W - 20,front.get_height))
+pg.init()
+pg.display.set_caption("Ball")
+screen = pg.display.set_mode(SIZE)
+clock = pg.time.Clock()
+
+ball = pg.image.load('ball.png')
+ball_rect = ball.get_rect()
 
 
-run = True
-while run:
-    for e in pygame.event.get():
-        if e.type == pygame.QUIT:
-            run = False
-            pygame.quit()
-        pygame.display.update()
+while True:
+    for e in pg.event.get():
+        if e.type == pg.QUIT or \
+                e.type == pg.KEYDOWN and e.key == pg.K_ESCAPE:
+            sys.exit(0)
+
+    ball_rect = ball_rect.move(speed_x, speed_y)
+    if ball_rect.left < 0 or ball_rect.right > WIDTH:
+        speed_x = -speed_x
+    if ball_rect.top < 0 or ball_rect.bottom > HEIGHT:
+        speed_y = -speed_y
+
+    screen.fill(BLACK)
+    screen.blit(ball, ball_rect)                  
+    pg.display.update()
+    clock.tick(FPS)
+    pg.display.set_caption(f"Ball  FPS:{int(clock.get_fps())}")
